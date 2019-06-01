@@ -26,6 +26,7 @@ Node_t *newNode(const char *value, Node_t *next);
 Node_t *deleteNode(Node_t *current, char **value);
 bool pop(Node_t **head, char **value);
 bool push(Node_t **head, const char *value);
+void List_print(Node_t * head);
 
 /* use void as parameters to silence the gcc warnings */
 int main(void)
@@ -35,22 +36,28 @@ int main(void)
     char buffer[BUFFER_SIZE] = { 0 };
 
     // fill our stack from the user input
-    while(1 == scanf("%s", buffer))
-    {
+   while(1 == scanf("%s", buffer))
+   {
         push(&Stack, buffer);
-    }
 
-    // write out the sentence in reverse order
+   }
+    printf("\n Created Linked list is: "); 
+    List_print(Stack);
+    
+
+    // write out the sentence in reverse order 
     while(Stack != NULL)
     {
         char *str = NULL;
         bool popped = pop(&Stack, &str);
         if( popped && NULL != str )
         {
+	    printf("\n this is working "); 
             printf("%s ", str);
             free(str);
         }
-    }
+    } 
+
 
     return EXIT_SUCCESS;
 }
@@ -67,36 +74,74 @@ int main(void)
  */
 Node_t *newNode(const char *value, Node_t *next)
 {
-    return NULL;
+    Node_t * n = (Node_t*) malloc(sizeof(Node_t));
+    if( n == NULL )
+    {
+       printf("not allocated");
+       return NULL;
+    }
+    else
+    {
+       char *p1 = strdup(value);
+       //printf("%s", p1);
+       n -> value = p1;
+       n -> next = next;
+       return n;
+    }
 }
 
 /**
  * puts the current node string pointer at the `value` parameter
  * free's the `current` Node.
  * and return the next node.
- */
+**/
 Node_t *deleteNode(Node_t *current, char **value)
 {
-    return NULL;
+        Node_t * p = current;
+        if (p == NULL) /* empty list, do nothing */
+		return p;
+	/* delete the head node */
+	else{
+        Node_t * q = current->next;
+	*value = current->value;
+	free (current);
+	return q;
+	}
 }
-
 /**
+ * puts the popped string onto `value`
  * Pop the string from the top of the stack using deleteNode
  * update the top of the stack
- * puts the popped string onto `value`
  * return true on success
- */
+ **/
 bool pop(Node_t **Stack, char **value)
 {
-    return false;
+	(*value) = (*Stack)->value;
+	Node_t * p = deleteNode(*Stack,value);
+	(*Stack) = p;
+	return true;
 }
 
-/**
- * Push the string to the top of the stack using newNode
+
+
+ /* Push the string to the top of the stack using newNode
  * update the top of the stack
  * return true if everything is successfull
- */
+ **/ 
 bool push(Node_t **Stack, const char *value)
 {
-    return false;
+    Node_t *u = newNode(value,*Stack);
+    *Stack = u;
+    return true;
+}
+
+
+void List_print(Node_t * head)
+{
+    while (head != NULL)
+    {
+       printf("%s", head -> value);
+       head = head -> next;
+    }
+    printf("\n\n");
 }
